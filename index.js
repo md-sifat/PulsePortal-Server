@@ -26,6 +26,26 @@ async function run() {
         const userCollection = client.db(process.env.MONGO_DB_NAME).collection("users");
         const campCollection = client.db(process.env.MONGO_DB_NAME).collection("camp");
 
+        app.get('/users', async (req, res) => {
+            const user = await userCollection.find().toArray();
+            res.send(user);
+        });
+
+        app.post('/users', async (req, res) => {
+            const user = req.body;
+            console.log(user);
+            const result = await userCollection.insertOne(user);
+            res.send(result);
+        });
+
+        app.delete('/users/:id', async (req, res) => {
+            const id = req.params.id;
+            // console.log(`delete request has come`);
+            const query = { _id: new ObjectId(id) }
+            const result = await userCollection.deleteOne(query);
+            res.send(result);
+        });
+
         
 
         // Send a ping to confirm a successful connection
