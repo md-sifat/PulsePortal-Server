@@ -37,6 +37,7 @@ async function run() {
             const result = await userCollection.insertOne(user);
             res.send(result);
         });
+        
         app.get('/users/:id', async (req, res) => {
             const id = req.params.id;
             const query = { uid: id };
@@ -52,6 +53,18 @@ async function run() {
             // console.log(`delete request has come`);
             const query = { uid: id };
             const result = await userCollection.deleteOne(query);
+            res.send(result);
+        });
+
+        // this routes for camps
+        app.get('/camps', async (req, res) => {
+            const camps = await campCollection.find().toArray();
+            res.send(camps);
+        });
+        app.post('/camps', async (req, res) => {
+            const camp = req.body;
+            console.log(camp);
+            const result = await campCollection.insertOne(camp);
             res.send(result);
         });
 
