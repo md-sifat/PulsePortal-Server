@@ -39,7 +39,7 @@ async function run() {
         });
         app.get('/users/:id', async (req, res) => {
             const id = req.params.id;
-            const query = { _id: new ObjectId(id) };
+            const query = { uid: id };
             const user = await userCollection.findOne(query);
             if (!user) {
                 return res.status(404).send({ message: 'User not found' });
@@ -50,7 +50,7 @@ async function run() {
         app.delete('/users/:id', async (req, res) => {
             const id = req.params.id;
             // console.log(`delete request has come`);
-            const query = { _id: new ObjectId(id) }
+            const query = { uid: id };
             const result = await userCollection.deleteOne(query);
             res.send(result);
         });
