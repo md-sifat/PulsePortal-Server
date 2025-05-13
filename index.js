@@ -27,6 +27,8 @@ async function run() {
         const campCollection = client.db(process.env.MONGO_DB_NAME).collection("camps");
         const reg_campCollection = client.db(process.env.MONGO_DB_NAME).collection("registered_camps");
         const transactionCollection = client.db(process.env.MONGO_DB_NAME).collection("transactions");
+        const feedbackCollection = client.db(process.env.MONGO_DB_NAME).collection("feedbacks");
+
 
 
 
@@ -190,6 +192,32 @@ async function run() {
                 res.status(500).send({ error: 'Failed to add transaction' });
             }
         });
+
+        app.put('/transactions/:id', async (req, res) => {
+            const id = req.params.id;
+            const updatedTransaction = req.body;
+            try {
+                const result = await transactionCollection.updateOne(
+                    { _id: new ObjectId(id) },
+                    { $set: updatedTransaction }
+                );
+                res.send(result);
+            } catch (error) {
+                res.status(500).send({ error: 'Failed to update transaction' });
+            }
+        });
+
+        app.delete('/transactions/:id', async (req, res) => {
+            const id = req.params.id;
+            try {
+                const result = await transactionCollection.deleteOne({ _id: new ObjectId(id) });
+                res.send(result);
+            } catch (error) {
+                res.status(500).send({ error: 'Failed to delete transaction' });
+            }
+        });
+
+
 
 
 
