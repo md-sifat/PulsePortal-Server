@@ -97,7 +97,16 @@ async function run() {
             res.send(user);
         });
 
-      
+        app.delete('/delete-camp/:campId', async (req, res) => {
+            const campId = req.params.campId;
+            try {
+                const result = await campCollection.deleteOne({ _id: new ObjectId(campId) });
+                res.send(result);
+            } catch (error) {
+                res.status(500).send({ error: 'Failed to delete camp' });
+            }
+        });
+
         
 
 
