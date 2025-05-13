@@ -89,12 +89,12 @@ async function run() {
         });
         app.get('/camps/:campId', async (req, res) => {
             const campId = req.params.campId;
-            const query = { uid: campId };
-            const user = await campCollection.findOne(query);
-            if (!user) {
+            const query = { _id: new ObjectId(campId) };
+            const camp = await campCollection.findOne(query);
+            if (!camp) {
                 return res.status(404).send({ message: 'User not found' });
             }
-            res.send(user);
+            res.send(camp);
         });
 
         app.delete('/delete-camp/:campId', async (req, res) => {
@@ -107,7 +107,21 @@ async function run() {
             }
         });
 
-        
+        app.put('/update-camp/:campId', async (req, res) => {
+            const campId = req.params.campId;
+            const updatedCamp = req.body;
+            try {
+                const result = await campCollection.updateOne(
+                    { _id: new ObjectId(campId) },
+                    { $set: updatedCamp }
+                );
+                res.send(result);
+            } catch (error) {
+                res.status(500).send({ error: 'Failed to update camp' });
+            }
+        });
+
+
 
 
         // Send a ping to confirm a successful connection
