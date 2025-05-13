@@ -26,6 +26,8 @@ async function run() {
         const userCollection = client.db(process.env.MONGO_DB_NAME).collection("users");
         const campCollection = client.db(process.env.MONGO_DB_NAME).collection("camps");
         const reg_campCollection = client.db(process.env.MONGO_DB_NAME).collection("registered_camps");
+        const transactionCollection = client.db(process.env.MONGO_DB_NAME).collection("transactions");
+
 
 
         app.get('/users', async (req, res) => {
@@ -134,7 +136,17 @@ async function run() {
             const result = await reg_campCollection.insertOne(camp);
             res.send(result);
         });
-       
+         app.get('/reg_camps/:campId', async (req, res) => {
+            const campId = req.params.campId;
+            const query = { _id: new ObjectId(campId) };
+            const camp = await reg_campCollection.findOne(query);
+            if (!camp) {
+                return res.status(404).send({ message: 'User not found' });
+            }
+            res.send(camp);
+        });
+
+
 
 
 
