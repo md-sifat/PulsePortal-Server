@@ -125,6 +125,8 @@ async function run() {
             }
         });
 
+        // api for registered camp 
+
 
         app.get('/reg_camps', async (req, res) => {
             const camps = await reg_campCollection.find().toArray();
@@ -136,7 +138,7 @@ async function run() {
             const result = await reg_campCollection.insertOne(camp);
             res.send(result);
         });
-         app.get('/reg_camps/:campId', async (req, res) => {
+        app.get('/reg_camps/:campId', async (req, res) => {
             const campId = req.params.campId;
             const query = { _id: new ObjectId(campId) };
             const camp = await reg_campCollection.findOne(query);
@@ -146,6 +148,27 @@ async function run() {
             res.send(camp);
         });
 
+
+
+        // api for transaction 
+        app.get('/transactions', async (req, res) => {
+            try {
+                const transactions = await transactionCollection.find().toArray();
+                res.send(transactions);
+            } catch (error) {
+                res.status(500).send({ error: 'Failed to fetch transactions' });
+            }
+        });
+
+        app.post('/transactions', async (req, res) => {
+            const transaction = req.body;
+            try {
+                const result = await transactionCollection.insertOne(transaction);
+                res.send(result);
+            } catch (error) {
+                res.status(500).send({ error: 'Failed to add transaction' });
+            }
+        });
 
 
 
