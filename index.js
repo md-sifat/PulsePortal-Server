@@ -25,6 +25,8 @@ async function run() {
 
         const userCollection = client.db(process.env.MONGO_DB_NAME).collection("users");
         const campCollection = client.db(process.env.MONGO_DB_NAME).collection("camps");
+        const reg_campCollection = client.db(process.env.MONGO_DB_NAME).collection("registered_camps");
+
 
         app.get('/users', async (req, res) => {
             const user = await userCollection.find().toArray();
@@ -121,6 +123,18 @@ async function run() {
             }
         });
 
+
+        app.get('/reg_camps', async (req, res) => {
+            const camps = await reg_campCollection.find().toArray();
+            res.send(camps);
+        });
+        app.post('/reg_camps', async (req, res) => {
+            const camp = req.body;
+            console.log(camp);
+            const result = await reg_campCollection.insertOne(camp);
+            res.send(result);
+        });
+       
 
 
 
