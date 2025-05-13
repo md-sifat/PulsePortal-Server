@@ -24,7 +24,7 @@ async function run() {
         // await client.connect();
 
         const userCollection = client.db(process.env.MONGO_DB_NAME).collection("users");
-        const campCollection = client.db(process.env.MONGO_DB_NAME).collection("camp");
+        const campCollection = client.db(process.env.MONGO_DB_NAME).collection("camps");
 
         app.get('/users', async (req, res) => {
             const user = await userCollection.find().toArray();
@@ -37,7 +37,7 @@ async function run() {
             const result = await userCollection.insertOne(user);
             res.send(result);
         });
-        
+
         app.get('/users/:id', async (req, res) => {
             const id = req.params.id;
             const query = { uid: id };
@@ -46,6 +46,26 @@ async function run() {
                 return res.status(404).send({ message: 'User not found' });
             }
             res.send(user);
+        });
+
+        app.put('/users/:id', async (req, res) => {
+            const id = req.params.id;
+            const updatedUser = req.body;
+            const query = { uid: id };
+            const updateDoc = {
+                $set: updatedUser
+            };
+            const options = { returnDocument: 'after' };
+            try {
+                const result = await userCollection.updateOne(query, updateDoc);
+                if (result.matchedCount === 0) {
+                    return res.status(404).send({ message: 'User not found' });
+                }
+                res.send(result);
+            } catch (error) {
+                console.error('Error updating user:', error);
+                res.status(500).send({ message: 'Failed to update user' });
+            }
         });
 
         app.delete('/users/:id', async (req, res) => {
@@ -67,7 +87,18 @@ async function run() {
             const result = await campCollection.insertOne(camp);
             res.send(result);
         });
+        app.get('/camps/:campId', async (req, res) => {
+            const campId = req.params.campId;
+            const query = { uid: campId };
+            const user = await campCollection.findOne(query);
+            if (!user) {
+                return res.status(404).send({ message: 'User not found' });
+            }
+            res.send(user);
+        });
 
+      
+        
 
 
         // Send a ping to confirm a successful connection
