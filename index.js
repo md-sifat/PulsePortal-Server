@@ -219,6 +219,29 @@ async function run() {
 
 
 
+        // all the feedback realed api routes are in here 
+
+        app.get('/feedbacks', async (req, res) => {
+            try {
+                const feedbacks = await feedbackCollection.find().toArray();
+                res.send(feedbacks);
+            } catch (error) {
+                res.status(500).send({ error: 'Failed to fetch feedbacks' });
+            }
+        });
+
+        app.post('/feedbacks', async (req, res) => {
+            try {
+                const feedback = req.body;
+                console.log(feedback);
+                const result = await feedbackCollection.insertOne(feedback);
+                res.send(result);
+            } catch (error) {
+                res.status(500).send({ error: 'Failed to add feedback' });
+            }
+        });
+
+
 
 
 
