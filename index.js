@@ -241,6 +241,30 @@ async function run() {
             }
         });
 
+        app.get('/feedbacks/:id', async (req, res) => {
+            const id = req.params.id;
+            try {
+                const query = { _id: new ObjectId(id) };
+                const feedback = await feedbackCollection.findOne(query);
+                if (!feedback) {
+                    return res.status(404).send({ message: 'Feedback not found' });
+                }
+                res.send(feedback);
+            } catch (error) {
+                res.status(500).send({ error: 'Failed to get feedback' });
+            }
+        });
+
+        app.delete('/delete-feedback/:id', async (req, res) => {
+            const id = req.params.id;
+            try {
+                const result = await feedbackCollection.deleteOne({ _id: new ObjectId(id) });
+                res.send(result);
+            } catch (error) {
+                res.status(500).send({ error: 'Failed to delete feedback' });
+            }
+        });
+
 
 
 
