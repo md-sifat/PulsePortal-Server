@@ -170,6 +170,25 @@ async function run() {
             }
         });
 
+        app.delete('/reg_camps/:campId', async (req, res) => {
+            const campId = req.params.campId;
+
+            try {
+                const query = { _id: new ObjectId(campId) };
+                const existingCamp = await reg_campCollection.findOne(query);
+
+                if (!existingCamp) {
+                    return res.status(404).send({ message: 'Camp not found' });
+                }
+
+                const result = await reg_campCollection.deleteOne(query);
+                res.send(result);
+            } catch (error) {
+                res.status(500).send({ error: 'Failed to delete camp' });
+            }
+        });
+
+
 
 
 
@@ -262,6 +281,21 @@ async function run() {
                 res.send(result);
             } catch (error) {
                 res.status(500).send({ error: 'Failed to delete feedback' });
+            }
+        });
+
+
+        app.put('/feedbacks/:id', async (req, res) => {
+            const id = req.params.id;
+            const updatedData = req.body;
+            try {
+                const result = await feedbackCollection.updateOne(
+                    { _id: new ObjectId(id) },
+                    { $set: updatedData }
+                );
+                res.send(result);
+            } catch (error) {
+                res.status(500).send({ error: 'Failed to update feedback' });
             }
         });
 
